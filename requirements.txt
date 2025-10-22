@@ -1,0 +1,30 @@
+# Text2Video Dependencies
+# Core ML/AI frameworks
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+transformers>=4.30.0
+diffusers>=0.20.0
+accelerate>=0.20.0
+
+# Video processing
+opencv-python>=4.8.0
+imageio>=2.31.0
+imageio-ffmpeg>=0.4.8
+pillow>=9.5.0
+
+# Utilities
+numpy>=1.24.0
+scipy>=1.10.0
+matplotlib>=3.7.0
+tqdm>=4.65.0
+requests>=2.31.0
+
+# Optional: Specific text2video models
+# runwayml/stable-video-diffusion
+# zeroscope-v2-xl
+# modelscope/text2video-ms
+
+# Development
+jupyter>=1.0.0
+ipython>=8.0.0
