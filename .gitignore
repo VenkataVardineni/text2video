@@ -1,0 +1,20 @@
+# python
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+# notebooks
+.ipynb_checkpoints/
+# builds
+dist/ build/
+# logs & runs
+wandb/ lightning_logs/ logs/
+# data & outputs (don't version datasets!)
+data/ .data/ datasets/ outputs/ results/
+# models & weights -> use Git LFS
+*.pt *.pth *.ckpt *.safetensors *.onnx
+# videos
+*.mp4 *.webm *.gif
+# OS/editor
+.DS_Store
