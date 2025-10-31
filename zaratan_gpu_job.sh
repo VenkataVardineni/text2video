@@ -10,9 +10,7 @@
 #SBATCH --account=your_account_name
 
 # Load required modules
-module load python/3.9
-module load cuda/11.8
-module load gcc/9.2.0
+module load python/3.10.10/gcc/11.3.0/cuda/12.3.0/linux-rhel8-zen2
 
 # Activate virtual environment (if using one)
 # source ~/venv/text2video/bin/activate
@@ -20,11 +18,11 @@ module load gcc/9.2.0
 # Set working directory
 cd ~/text2video
 
-# Install dependencies (run once)
-# pip install -r requirements.txt
+# Test GPU availability
+python -c "import torch; print(f'PyTorch version: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU count: {torch.cuda.device_count()}'); print(f'GPU name: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"None\"}')"
 
 # Run your text2video application
-python main.py --input "Your text prompt here" --output "output_video.mp4"
+# python main.py --input "Your text prompt here" --output "output_video.mp4"
 
 # Example for different frameworks:
 # python runway_gen2.py --prompt "Your text prompt here"
