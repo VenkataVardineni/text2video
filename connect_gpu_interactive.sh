@@ -17,3 +17,4 @@ echo "  module load python/3.10.10/gcc/11.3.0/cuda/12.3.0/linux-rhel8-zen2"
 echo "  python -c \"import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"None\"}')\""
 echo ""
 echo "📚 To check job status: squeue -u \$USER"
+

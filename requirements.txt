@@ -7,6 +7,10 @@ transformers>=4.30.0
 diffusers>=0.20.0
 accelerate>=0.20.0
 
+# Required for PyTorch compatibility
+sympy==1.13.1
+typing-extensions>=4.8.0
+
 # Video processing
 opencv-python>=4.8.0
 imageio>=2.31.0
