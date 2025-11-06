@@ -6,6 +6,7 @@ torchaudio>=2.0.0
 transformers>=4.30.0
 diffusers>=0.20.0
 accelerate>=0.20.0
+einops>=0.7.0
 
 # Required for PyTorch compatibility
 sympy==1.13.1
