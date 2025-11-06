@@ -25,9 +25,29 @@ mkdir -p "$SCR"/{tmp,appt_cache,runs}
 export APPTAINER_TMPDIR="$SCR/tmp"
 export APPTAINER_CACHEDIR="$SCR/appt_cache"
 export APPTAINER_MKSQUASHFS_PROCS=1
+export SINGULARITY_MKSQUASHFS_PROCS=1
 ulimit -n 4096 2>/dev/null || true
 
 echo "📁 Scratch directory: $SCR"
+
+# Check if we're on a login node (container building may fail)
+if [[ "$(hostname)" =~ login ]]; then
+    echo ""
+    echo "⚠️  WARNING: You're on a login node. Container building may fail due to resource limits."
+    echo "   Recommendation: Run setup on a compute node for better success."
+    echo ""
+    echo "   Option 1: Get an interactive session first:"
+    echo "     salloc -p gpu --gres=gpu:a100_1g.5gb:1 --time=01:00:00 --mem=20G"
+    echo "     srun --pty bash"
+    echo "     bash ~/text2video/setup_zaratan.sh"
+    echo ""
+    read -p "Continue on login node anyway? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Exiting. Please run on a compute node."
+        exit 0
+    fi
+fi
 
 # Load Apptainer/Singularity
 echo "📦 Loading container runtime..."
@@ -35,10 +55,11 @@ module load apptainer 2>/dev/null || module load singularity
 ap=$(command -v apptainer || command -v singularity)
 echo "✅ Using container runner: $ap"
 
-# Test GPU and container
+# Test GPU and container (with error handling)
 echo ""
 echo "🧪 Testing GPU and PyTorch container..."
-"$ap" exec --nv -B "$HOME":"$HOME" -B "$SCR":/scratch -W /scratch \
+echo "   (This may take a few minutes on first run as it downloads the container...)"
+if ! "$ap" exec --nv -B "$HOME":"$HOME" -B "$SCR":/scratch -W /scratch \
   docker://pytorch/pytorch:2.5.1-cuda12.1-cudnn9-runtime \
   python - <<'PY'
 import torch
@@ -46,6 +67,15 @@ print("✅ Torch:", torch.__version__, "| CUDA:", torch.cuda.is_available())
 if torch.cuda.is_available():
     print("✅ GPU:", torch.cuda.get_device_name(0))
 PY
+then
+    echo ""
+    echo "❌ Container execution failed. This often happens on login nodes."
+    echo "   Please run this setup script on a compute node:"
+    echo "   salloc -p gpu --gres=gpu:a100_1g.5gb:1 --time=01:00:00 --mem=20G"
+    echo "   srun --pty bash"
+    echo "   bash ~/text2video/setup_zaratan.sh"
+    exit 1
+fi
 
 # Create virtual environment inside container
 echo ""

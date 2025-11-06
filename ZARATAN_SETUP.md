@@ -18,13 +18,25 @@ rsync -av --delete . vvr2211@login.zaratan.umd.edu:~/text2video/
 
 ### Step 2: Setup on Zaratan
 
+**⚠️ Important:** Container building may fail on login nodes. Run setup on a compute node:
+
 ```bash
 # SSH to Zaratan
 ssh zaratan
 # (or: ssh vvr2211@login.zaratan.umd.edu)
 
-# Run setup script
+# Get a compute node allocation first (recommended)
+salloc -p gpu --gres=gpu:a100_1g.5gb:1 --time=01:00:00 --mem=20G
+srun --pty bash
+
+# Now run setup script
 bash ~/text2video/setup_zaratan.sh
+```
+
+**Alternative:** If you want to try on login node (may fail):
+```bash
+bash ~/text2video/setup_zaratan.sh
+# Script will warn you and ask for confirmation
 ```
 
 ### Step 3: Get GPU Allocation and Run
