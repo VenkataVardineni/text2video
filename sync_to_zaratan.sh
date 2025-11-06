@@ -28,12 +28,13 @@ rsync -av --delete \
     --exclude '*.mp4' \
     --exclude '*.webm' \
     --exclude '*.gif' \
-    . vvr2211@zaratan.umd.edu:~/text2video/
+    . vvr2211@login.zaratan.umd.edu:~/text2video/
 
 echo ""
 echo "✅ Sync complete!"
 echo ""
 echo "📋 Next steps:"
-echo "1. SSH to Zaratan: ssh vvr2211@zaratan.umd.edu"
+echo "1. SSH to Zaratan: ssh zaratan"
+echo "   (or: ssh vvr2211@login.zaratan.umd.edu)"
 echo "2. Run setup script: bash ~/text2video/setup_zaratan.sh"
 echo "   OR follow the manual setup in setup_zaratan.sh"

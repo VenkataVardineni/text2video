@@ -13,14 +13,15 @@ This guide helps you set up and run your text2video project on UMD's Zaratan GPU
 
 Or manually:
 ```bash
-rsync -av --delete . vvr2211@zaratan.umd.edu:~/text2video/
+rsync -av --delete . vvr2211@login.zaratan.umd.edu:~/text2video/
 ```
 
 ### Step 2: Setup on Zaratan
 
 ```bash
 # SSH to Zaratan
-ssh vvr2211@zaratan.umd.edu
+ssh zaratan
+# (or: ssh vvr2211@login.zaratan.umd.edu)
 
 # Run setup script
 bash ~/text2video/setup_zaratan.sh
@@ -54,7 +55,8 @@ srun --pty bash
 
 ### 2. Connect and Run (Remote)
 ```bash
-ssh vvr2211@zaratan.umd.edu
+ssh zaratan
+# (or: ssh vvr2211@login.zaratan.umd.edu)
 salloc -p gpu --gres=gpu:a100_1g.5gb:1 --time=02:00:00 --mem=40G
 srun --pty bash
 ```
