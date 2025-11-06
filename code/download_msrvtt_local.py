@@ -69,6 +69,52 @@ def probe_with_decord(path: Path) -> Dict[str, Any]:
         fps = float(vr.get_avg_fps()) if hasattr(vr, "get_avg_fps") else 30.0
         dur = n / max(fps, 1e-6)
         return dict(num_frames=n, fps=fps, duration=dur)
+    except ImportError:
+        # Decord not available, use ffprobe instead
+        return probe_with_ffprobe(path)
+    except Exception as e:
+        return probe_with_ffprobe(path)
+
+def probe_with_ffprobe(path: Path) -> Dict[str, Any]:
+    """Probe video with ffprobe (fallback when decord unavailable)"""
+    try:
+        import subprocess
+        import json
+        
+        # Get video metadata using ffprobe
+        cmd = [
+            'ffprobe', '-v', 'quiet', '-print_format', 'json',
+            '-show_format', '-show_streams', str(path)
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        
+        if result.returncode == 0:
+            data = json.loads(result.stdout)
+            
+            # Find video stream
+            video_stream = None
+            for stream in data.get('streams', []):
+                if stream.get('codec_type') == 'video':
+                    video_stream = stream
+                    break
+            
+            if video_stream:
+                # Get duration from format or stream
+                duration = float(data.get('format', {}).get('duration', 0))
+                fps_str = video_stream.get('r_frame_rate', '30/1')
+                fps_parts = fps_str.split('/')
+                fps = float(fps_parts[0]) / float(fps_parts[1]) if len(fps_parts) == 2 else 30.0
+                
+                # Estimate frame count
+                num_frames = int(duration * fps) if duration > 0 else 0
+                
+                return dict(
+                    num_frames=num_frames,
+                    fps=fps,
+                    duration=duration
+                )
+        
+        return dict(num_frames=0, fps=None, duration=None, error="ffprobe failed")
     except Exception as e:
         return dict(num_frames=0, fps=None, duration=None, error=str(e))
 

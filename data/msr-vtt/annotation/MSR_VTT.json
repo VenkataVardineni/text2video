@@ -1,0 +1,30 @@
+{
+  "videos": [
+    {
+      "video_id": "video0",
+      "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+      "split": "train",
+      "category": "test",
+      "start_time": "0",
+      "end_time": "10",
+      "annotations": [
+        {
+          "caption": "A test video for MSR-VTT preprocessing pipeline"
+        }
+      ]
+    },
+    {
+      "video_id": "video1",
+      "url": "https://www.youtube.com/watch?v=2Vv-BfVoq4g",
+      "split": "train",
+      "category": "test",
+      "start_time": "0",
+      "end_time": "10",
+      "annotations": [
+        {
+          "caption": "Another test video for validation"
+        }
+      ]
+    }
+  ]
+}

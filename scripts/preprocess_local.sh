@@ -13,10 +13,15 @@ echo "====================================================="
 command -v python3 >/dev/null 2>&1 || { echo "❌ python3 not found"; exit 1; }
 command -v ffmpeg >/dev/null 2>&1 || { echo "⚠️  ffmpeg not found (needed for video conversion)"; }
 
-# Check if decord is installed
+# Check if decord is installed (optional - will use ffprobe if not available)
 python3 -c "import decord" 2>/dev/null || {
-    echo "📦 Installing decord..."
-    pip3 install decord==0.6.0
+    echo "📦 Attempting to install decord (optional - will use ffprobe if fails)..."
+    pip3 install decord==0.6.0 2>/dev/null || {
+        echo "   ⚠️  Decord not available - will use ffprobe for video metadata"
+        command -v ffprobe >/dev/null || {
+            echo "   ⚠️  Please install ffmpeg: brew install ffmpeg"
+        }
+    }
 }
 
 # Check if other dependencies are installed
