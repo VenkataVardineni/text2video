@@ -1,8 +1,26 @@
 #!/bin/bash
 # Launch text-to-video diffusion training baseline
 # Usage: ./scripts/train_t2v_baseline.sh [STEPS] [BATCH_SIZE] [FRAMES] [SIZE]
+#
+# Note: Make sure you're on a GPU node (gpu-*). If on login node, run:
+#   salloc -p gpu --gres=gpu:a100_1g.5gb:1 --time=24:00:00 --mem=40G
+#   srun --pty bash
 
 set -euo pipefail
+
+# Check if we're on a GPU node
+if [[ ! "$(hostname)" =~ gpu- ]]; then
+    echo "⚠️  Warning: You don't appear to be on a GPU node (hostname: $(hostname))"
+    echo "   If you're on a login node, get GPU allocation first:"
+    echo "   salloc -p gpu --gres=gpu:a100_1g.5gb:1 --time=24:00:00 --mem=40G"
+    echo "   srun --pty bash"
+    echo ""
+    read -p "Continue anyway? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+fi
 
 # Default parameters (can be overridden via environment)
 STEPS=${STEPS:-2000}

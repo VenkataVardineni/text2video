@@ -12,7 +12,17 @@ A compact, working baseline for training a text-to-video diffusion model on MSR-
 
 ## Quick Start
 
-### 1. Install Dependencies
+### 1. Get GPU Allocation
+
+**If on login node:**
+```bash
+salloc -p gpu --gres=gpu:a100_1g.5gb:1 --time=24:00:00 --mem=40G
+srun --pty bash
+```
+
+**If already on GPU node** (check with `hostname`), skip this step!
+
+### 2. Install Dependencies
 
 On Zaratan (inside your container):
 
@@ -20,7 +30,7 @@ On Zaratan (inside your container):
 ~/text2video/run.sh pip install --no-cache-dir einops transformers
 ```
 
-### 2. Verify Dataset
+### 3. Verify Dataset
 
 Make sure your manifest is ready:
 
@@ -33,7 +43,21 @@ head -1 ~/scratch.msml612-fa25/data/manifests/train.manifest.processed.jsonl | \
     python3 -m json.tool | head -10
 ```
 
-### 3. Launch Training
+### 3. Get GPU Allocation (if not already on GPU node)
+
+**If you're on a login node**, request GPU allocation:
+
+```bash
+# Request GPU allocation (specify GPU type)
+salloc -p gpu --gres=gpu:a100_1g.5gb:1 --time=24:00:00 --mem=40G
+
+# Get interactive shell on GPU node
+srun --pty bash
+```
+
+**If you're already on a GPU node** (like `gpu-b11-6`), you can run directly!
+
+### 4. Launch Training
 
 **Option A: Use the helper script**
 
