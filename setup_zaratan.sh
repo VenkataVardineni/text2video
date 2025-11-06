@@ -21,14 +21,41 @@ fi
 
 # Set up scratch directory
 SCR=~/scratch.text2video
-mkdir -p "$SCR"/{tmp,appt_cache,runs}
-export APPTAINER_TMPDIR="$SCR/tmp"
+mkdir -p "$SCR"/{appt_cache,runs}
+
+# Use /tmp on compute node for building (usually has more space/quota)
+# Fall back to scratch if /tmp doesn't work
+if [[ -w /tmp ]] && [[ -d /tmp ]]; then
+    BUILD_TMP="/tmp/apptainer_build_$$"
+    mkdir -p "$BUILD_TMP"
+    export APPTAINER_TMPDIR="$BUILD_TMP"
+    echo "📁 Using /tmp for container building: $BUILD_TMP"
+else
+    mkdir -p "$SCR/tmp"
+    export APPTAINER_TMPDIR="$SCR/tmp"
+    echo "📁 Using scratch for container building: $SCR/tmp"
+fi
+
 export APPTAINER_CACHEDIR="$SCR/appt_cache"
 export APPTAINER_MKSQUASHFS_PROCS=1
 export SINGULARITY_MKSQUASHFS_PROCS=1
 ulimit -n 4096 2>/dev/null || true
 
 echo "📁 Scratch directory: $SCR"
+echo "📁 Cache directory: $SCR/appt_cache"
+
+# Check disk space
+echo ""
+echo "💾 Checking disk space..."
+df -h ~ | tail -1
+df -h /tmp 2>/dev/null | tail -1 || echo "   /tmp not available"
+
+# Clean up old build temp files if they exist
+echo ""
+echo "🧹 Cleaning up old temporary files..."
+rm -rf "$SCR/tmp/build-temp-*" 2>/dev/null || true
+rm -rf /tmp/apptainer_build_* 2>/dev/null || true
+echo "✅ Cleanup complete"
 
 # Check if we're on a login node (container building may fail)
 if [[ "$(hostname)" =~ login ]]; then
@@ -151,6 +178,14 @@ print("✅ Training step OK on", d)
 PY
 '
 
+# Cleanup build temp directory
+if [[ -n "${BUILD_TMP:-}" ]] && [[ -d "$BUILD_TMP" ]]; then
+    echo ""
+    echo "🧹 Cleaning up build temporary files..."
+    rm -rf "$BUILD_TMP" 2>/dev/null || true
+    echo "✅ Cleanup complete"
+fi
+
 echo ""
 echo "🎉 Setup complete!"
 echo ""
@@ -161,7 +196,9 @@ echo "  Python env:       /scratch/venv (inside container)"
 echo ""
 echo "🚀 Daily workflow:"
 echo "  1. Local: ./sync_to_zaratan.sh"
-echo "  2. Remote: ssh vvr2211@zaratan.umd.edu"
+echo "  2. Remote: ssh zaratan"
 echo "  3. Get GPU: salloc -p gpu --gres=gpu:a100_1g.5gb:1 --time=02:00:00 --mem=40G"
 echo "  4. Run: srun --pty bash"
 echo "  5. Execute: ~/text2video/run_in_container.sh bash -lc 'source /scratch/venv/bin/activate && python ~/text2video/your_script.py'"
+echo ""
+echo "💡 If you run out of disk space, run: bash ~/text2video/cleanup_scratch.sh"
