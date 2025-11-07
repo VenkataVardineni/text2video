@@ -35,7 +35,7 @@ if [ ! -f "$SIF" ]; then
       export HF_HOME=/scratch/hf_cache
       export TORCH_HOME=/scratch/torch_cache
       # run the user command in the venv
-      '"$*"'
+      "$@"
     '
 else
   exec "$ap" exec --nv \
@@ -55,6 +55,6 @@ else
       export HF_HOME=/scratch/hf_cache
       export TORCH_HOME=/scratch/torch_cache
       # run the user command in the venv
-      '"$*"'
+      "$@"
     '
 fi
