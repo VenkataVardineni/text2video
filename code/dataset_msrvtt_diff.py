@@ -41,12 +41,11 @@ class MSRVTTDiffusionDataset(Dataset):
 
     def __len__(self): return len(self.items)
 
-    def _sample_indices(self, n: int, k: int):
-        if n <= k:
-            idx = np.arange(n)
-            if n < k: idx = np.pad(idx, (0, k-n), mode='edge')
-            return idx
-        return np.linspace(0, n-1, k, dtype=int)
+    def _sample_idx(self, n, k):
+        if n<=k:
+            idx=np.arange(n)
+            return np.pad(idx,(0,k-n),'edge') if n<k else idx
+        return np.linspace(0,n-1,k,dtype=int)
 
     def __getitem__(self, idx: int):
         rec = self.items[idx]
@@ -56,7 +55,7 @@ class MSRVTTDiffusionDataset(Dataset):
 
         vr = de.VideoReader(path)
         n = len(vr)
-        ids = self._sample_indices(n, self.num_frames)
+        ids = self._sample_idx(len(vr), self.num_frames)
         batch = vr.get_batch(ids).asnumpy()  # (T,H,W,3) uint8
         frames = [self.frame_tf(Image.fromarray(fr)) for fr in batch]  # list of (3,H,W)
         vid = torch.stack(frames, dim=0)  # (T,3,H,W)

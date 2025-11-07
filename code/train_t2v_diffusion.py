@@ -42,8 +42,8 @@ def main():
     for p in txt_enc.parameters(): p.requires_grad_(False)
 
     # model, opt, ema
-    model = UNet3DCond(in_ch=3, base=64, emb_dim=512).to(device)
-    ema   = UNet3DCond(in_ch=3, base=64, emb_dim=512).to(device)
+    model = UNet3DCond().to(device)
+    ema   = UNet3DCond().to(device)
     ema.load_state_dict(model.state_dict())
     for p in ema.parameters(): p.requires_grad_(False)
 
@@ -104,8 +104,8 @@ def main():
             torch.save({"step": step, "model": model.state_dict(), "ema": ema.state_dict()}, ckpt)
             print("saved", ckpt)
             with torch.no_grad(), torch.cuda.amp.autocast(enabled=(device.type=="cuda")):
-                a = ddpm.sqrt_alphas_cumprod[t][:,None,None,None,None]
-                b = ddpm.sqrt_one_minus_alphas_cumprod[t][:,None,None,None,None]
+                a = ddpm.sqrt_ab[t][:,None,None,None,None]
+                b = ddpm.sqrt_1m[t][:,None,None,None,None]
                 eps = ema(x_t, t.float()/ddpm.T, txt)
                 x0_hat = (x_t - b*eps)/a
                 to_image_grid(x0_hat.detach().cpu(), outdir, step, tag="preview")
