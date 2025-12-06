@@ -1,20 +1,46 @@
-# python
+# Python
 __pycache__/
-*.pyc
-.env
-.venv/
+*.py[cod]
+*$py.class
+*.so
+.Python
 venv/
-# notebooks
-.ipynb_checkpoints/
-# builds
-dist/ build/
-# logs & runs
-wandb/ lightning_logs/ logs/
-# data & outputs (don't version datasets!)
-data/ .data/ datasets/ outputs/ results/
-# models & weights -> use Git LFS
-*.pt *.pth *.ckpt *.safetensors *.onnx
-# videos
-*.mp4 *.webm *.gif
-# OS/editor
+env/
+ENV/
+
+# Data and checkpoints
+data/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Outputs
+outputs/
+*.mp4
+*.avi
+*.mov
+*.webm
+*.gif
+*.png
+*.jpg
+*.jpeg
+
+# Logs
+*.log
+*.out
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 .DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
