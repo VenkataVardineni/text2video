@@ -191,16 +191,15 @@ The model uses a transformer architecture with:
 
 ### Quantitative Metrics
 
-- **Top CLIP Score**: 0.2131 ("A dog running in the grass")
-- **Average CLIP Score (Top 3)**: 0.2098 (text-video alignment)
-- **Generation Speed**: ~0.38 frames/second
-- **Video Duration**: 5-17 seconds (configurable)
-- **Resolution**: 256×256 pixels (from 32×32 latents)
-
-**Top 3 CLIP Scores:**
+**Top 3 CLIP Scores (text-video alignment):**
 1. "A dog running in the grass": 0.2131
 2. "A man talking to the camera": 0.2123
 3. "A person playing a guitar": 0.2039
+
+- **Average CLIP Score (Top 3)**: 0.2098
+- **Generation Speed**: ~0.38 frames/second
+- **Video Duration**: 5-17 seconds (configurable)
+- **Resolution**: 256×256 pixels (from 32×32 latents)
 
 ### Model Checkpoints
 
