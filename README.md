@@ -148,11 +148,10 @@ Then open `http://localhost:7860` in your browser.
 
 ### 4. Example Prompts
 
-Tested prompts that work well:
-- "A person playing a guitar" (CLIP: 0.2039)
+Top 3 performing prompts (by CLIP score):
+- "A dog running in the grass" (CLIP: 0.2131) ⭐ Best
 - "A man talking to the camera" (CLIP: 0.2123)
-- "A dog running in the grass" (CLIP: 0.2131)
-- "A baby crawling on the floor" (CLIP: 0.1704)
+- "A person playing a guitar" (CLIP: 0.2039)
 
 ## Model Architecture Details
 
@@ -192,10 +191,16 @@ The model uses a transformer architecture with:
 
 ### Quantitative Metrics
 
-- **Average CLIP Score**: 0.1999 (text-video alignment)
+- **Top CLIP Score**: 0.2131 ("A dog running in the grass")
+- **Average CLIP Score (Top 3)**: 0.2098 (text-video alignment)
 - **Generation Speed**: ~0.38 frames/second
 - **Video Duration**: 5-17 seconds (configurable)
 - **Resolution**: 256×256 pixels (from 32×32 latents)
+
+**Top 3 CLIP Scores:**
+1. "A dog running in the grass": 0.2131
+2. "A man talking to the camera": 0.2123
+3. "A person playing a guitar": 0.2039
 
 ### Model Checkpoints
 
