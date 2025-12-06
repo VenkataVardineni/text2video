@@ -38,7 +38,8 @@ This project implements a text-to-video generation model using:
 ### 4. Evaluation
 - Generated videos from scratch using epoch 100 checkpoint
 - Calculated CLIP scores for text-video alignment
-- Average CLIP Score: 0.1999 (range: 0.1704 - 0.2131)
+- **Top 3 CLIP Scores**: 0.2131, 0.2123, 0.2039
+- **Average CLIP Score (Top 3)**: 0.2098
 - Throughput: ~0.38 frames/second
 
 ## Project Structure
