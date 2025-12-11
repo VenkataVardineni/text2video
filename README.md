@@ -14,7 +14,13 @@ This project implements a text-to-video generation model using:
 ## What Was Done
 
 ### 1. Dataset Preparation
-- Downloaded MSR-VTT dataset (videos and captions)
+- **Dataset**: MSR-VTT (Microsoft Research Video to Text)
+  - **Total Videos**: ~10,000 videos
+  - **Video Duration**: ~10-30 seconds per video (average ~15 seconds)
+  - **Video Resolution**: Variable (downsampled to 256×256 for training)
+  - **FPS**: 30 fps (original), sampled to 8 fps for training
+  - **Captions**: Multiple captions per video (typically 15-20 captions per video)
+  - **Caption Format**: Natural language descriptions of video content
 - Preprocessed videos: converted to VAE latents (32x32) for faster training
 - Generated text embeddings using CLIP text encoder
 - Created manifest files for training data
