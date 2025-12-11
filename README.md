@@ -20,12 +20,14 @@ This project implements a text-to-video generation model using:
 - Created manifest files for training data
 
 ### 2. Model Architecture
-- **VideoTransformer**: Transformer-based denoiser with:
+- **Initial Implementation**: Started with UNet3D architecture (`code/models_unet3d_film.py`)
+- **Final Architecture**: **VideoTransformer** - Transformer-based denoiser with:
   - Self-attention blocks for spatial relationships
   - Cross-attention blocks for text conditioning
   - 12 layers, 768 hidden dimensions, 12 attention heads
   - Sequence length: 1024 (32×32 for single frame)
   - Zero-initialized output layer for stable training
+- **Architecture Evolution**: Switched from UNet to Transformer for better text conditioning and scalability
 
 ### 3. Training
 - Trained for 100 epochs on MSR-VTT dataset
