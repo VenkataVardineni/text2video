@@ -54,20 +54,43 @@ This project implements a text-to-video generation model using:
 
 ```
 text2video/
-├── models.py          # VideoTransformer model architecture
-├── train.py           # Training script
-├── preprocess.py      # Data preprocessing (video → latents)
-├── inference.py       # Video generation from text prompts
-├── app.py             # Gradio UI for interactive generation
-├── requirements.txt   # Python dependencies
-├── checkpoints/       # Saved model checkpoints
-└── data/              # Dataset files
+├── models.py                    # VideoTransformer (FINAL: Cross-Attention)
+├── models_baseline_meanpool.py  # Baseline model with mean pooling
+├── models_unet3d_film.py        # Original UNet3D implementation
+├── train.py                     # Training script
+├── preprocess.py                # Data preprocessing (video → latents)
+├── inference.py                 # Video generation from text prompts
+├── app.py                       # Gradio UI for interactive generation
+├── refine_video_custom.py       # Vid2Vid refinement with custom prompts
+├── add_noise_to_video.py        # Add noise to videos for Vid2Vid
+├── requirements.txt             # Python dependencies
+├── checkpoints/                 # Saved model checkpoints (empty in repo)
+└── data/                        # Dataset files (not included)
     └── msr-vtt/
-        ├── videos/           # Video files
-        ├── latents/          # Preprocessed VAE latents
-        ├── text_embeddings/  # CLIP text embeddings
-        └── annotations/      # Caption files
+        ├── videos/           # Video files (download separately)
+        ├── latents/          # Preprocessed VAE latents (created by preprocess.py)
+        ├── text_embeddings/  # CLIP text embeddings (created by preprocess.py)
+        └── annotations/      # Caption files (download separately)
 ```
+
+## Model Architecture Evolution
+
+This repository includes three model implementations showing the evolution:
+
+### 1. **UNet3D** (`models_unet3d_film.py`)
+- **Initial implementation**: 3D convolutional UNet with FiLM conditioning
+- **Text conditioning**: Feature-wise Linear Modulation (FiLM)
+- **Why replaced**: Limited text conditioning capability
+
+### 2. **Baseline Transformer** (`models_baseline_meanpool.py`)
+- **Second implementation**: Transformer with mean pooling
+- **Text conditioning**: Mean-pools text embeddings and adds to spatial features
+- **Why replaced**: Mean pooling loses sequence information, less effective than cross-attention
+
+### 3. **Final Transformer** (`models.py`)
+- **Current implementation**: Transformer with cross-attention
+- **Text conditioning**: Cross-attention blocks (query from spatial, key/value from text)
+- **Result**: Best text-video alignment (CLIP score: 0.2098)
 
 ## Setup Instructions
 
@@ -118,7 +141,10 @@ This will:
 - Generate CLIP text embeddings
 - Save to `data/msr-vtt/latents/` and `data/msr-vtt/text_embeddings/`
 
-### 2. Training
+
+### 3. Training
+
+**⚠️ Training is required before inference!**
 
 Train the model from scratch:
 
@@ -126,22 +152,23 @@ Train the model from scratch:
 python train.py
 ```
 
+Training will:
+- Load preprocessed latents and text embeddings
+- Train for 100 epochs (default)
+- Save checkpoints every 5 epochs to `checkpoints/`
+- Each checkpoint is ~2.0GB
+
+**Training time**: ~2-3 days on NVIDIA A100 GPU
+
 Or resume from a checkpoint:
 ```python
 # Edit train.py and set:
 RESUME_FROM = "checkpoints/checkpoint_epoch_X.pt"
 ```
 
-Training configuration (in `train.py`):
-- `NUM_EPOCHS = 100`
-- `BATCH_SIZE = 1`
-- `GRAD_ACCUM = 8`
-- `LEARNING_RATE = 1e-4`
-- `SAVE_EVERY = 1` (save after each epoch)
+### 4. Inference
 
-### 3. Inference
-
-Generate videos from text prompts:
+**After training**, generate videos from text prompts:
 
 ```bash
 python inference.py --prompt "A cat playing with a ball" --checkpoint checkpoints/checkpoint_epoch_100.pt --output output.mp4
@@ -154,6 +181,8 @@ python app.py
 ```
 
 Then open `http://localhost:7860` in your browser.
+
+**Note**: You need a trained checkpoint (from step 3) to run inference.
 
 ### 4. Example Prompts
 
