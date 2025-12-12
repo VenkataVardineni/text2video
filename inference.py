@@ -1,6 +1,7 @@
 """
-Inference script for text-to-image generation (single frame model)
-Generates images from text prompts, can be combined into videos
+Inference script for text-to-video generation (pure text-to-video, no video input)
+Generates videos from text prompts ONLY - builds from complete scratch using pure noise.
+NO video input is used - each frame is generated independently from the text prompt.
 """
 import torch
 import torch.nn.functional as F
@@ -99,7 +100,8 @@ class VideoGenerator:
     @torch.no_grad()
     def generate_frame(self, prompt, num_inference_steps=NUM_INFERENCE_STEPS, vae_cpu=None):
         """
-        Generate a single frame from text prompt
+        Generate a single frame from text prompt ONLY (no video input)
+        Generates from complete scratch using pure random noise initialization.
         
         Args:
             prompt: Text description
@@ -119,7 +121,8 @@ class VideoGenerator:
         
         text_embeddings = self.text_encoder(text_inputs.input_ids)[0]  # [1, 77, 512]
         
-        # Initialize latents with noise
+        # Initialize latents with PURE RANDOM NOISE (generating from scratch, no video input)
+        # This is a text-to-video generation - we start from complete noise
         latents = torch.randn(
             (1, 4, LATENT_HEIGHT, LATENT_WIDTH),
             device=self.device,
@@ -171,7 +174,9 @@ class VideoGenerator:
     @torch.no_grad()
     def generate(self, prompt, num_inference_steps=NUM_INFERENCE_STEPS, guidance_scale=GUIDANCE_SCALE):
         """
-        Generate video (multiple frames) from text prompt
+        Generate video (multiple frames) from text prompt ONLY (no video input)
+        Builds video from complete scratch using pure random noise initialization.
+        Each frame is generated independently from the text prompt.
         
         Args:
             prompt: Text description of the video

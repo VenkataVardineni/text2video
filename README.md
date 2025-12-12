@@ -59,10 +59,8 @@ text2video/
 ├── models_unet3d_film.py        # Original UNet3D implementation
 ├── train.py                     # Training script
 ├── preprocess.py                # Data preprocessing (video → latents)
-├── inference.py                 # Video generation from text prompts
+├── inference.py                 # Video generation from text prompts (from scratch)
 ├── app.py                       # Gradio UI for interactive generation
-├── refine_video_custom.py       # Vid2Vid refinement with custom prompts
-├── add_noise_to_video.py        # Add noise to videos for Vid2Vid
 ├── requirements.txt             # Python dependencies
 ├── checkpoints/                 # Saved model checkpoints (empty in repo)
 └── data/                        # Dataset files (not included)
@@ -172,9 +170,9 @@ Training configuration (in `train.py`):
 - `LEARNING_RATE = 1e-4`
 - `SAVE_EVERY = 5` (save every 5 epochs)
 
-### 3. Inference
+### 3. Inference (Text-to-Video from Scratch)
 
-**After training**, generate videos from text prompts:
+**After training**, generate videos from text prompts. The model generates videos **completely from scratch** - no input video required, only a text prompt.
 
 ```bash
 python inference.py --prompt "A cat playing with a ball" --checkpoint checkpoints/checkpoint_epoch_100.pt --output output.mp4
@@ -188,7 +186,14 @@ python app.py
 
 Then open `http://localhost:7860` in your browser.
 
-**Note**: You need a trained checkpoint (from step 3) to run inference.
+**How it works:**
+1. Starts with random noise (pure generation from scratch)
+2. Uses DDIM scheduler to denoise step-by-step
+3. Conditions each step on your text prompt
+4. Decodes final latents to video frames
+5. Outputs a video generated entirely from the prompt
+
+**Note**: You need a trained checkpoint (from step 2) to run inference. The model generates videos from scratch - no video input required.
 
 ### 4. Example Prompts
 
@@ -274,7 +279,7 @@ Best performing checkpoint: **Epoch 100**
 - Add temporal consistency loss
 - Train on video sequences (not just frames)
 - Implement classifier-free guidance during training
-- Add video-to-video refinement capability
+- Multi-frame generation for better temporal consistency
 
 ## Troubleshooting
 
