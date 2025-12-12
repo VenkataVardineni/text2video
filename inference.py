@@ -101,7 +101,7 @@ class VideoGenerator:
     def generate_frame(self, prompt, num_inference_steps=NUM_INFERENCE_STEPS, vae_cpu=None):
         """
         Generate a single frame from text prompt ONLY (no video input)
-        Generates from complete scratch using pure random noise initialization.
+        Generates from complete scratch using zero initialization.
         
         Args:
             prompt: Text description
@@ -121,9 +121,9 @@ class VideoGenerator:
         
         text_embeddings = self.text_encoder(text_inputs.input_ids)[0]  # [1, 77, 512]
         
-        # Initialize latents with PURE RANDOM NOISE (generating from scratch, no video input)
-        # This is a text-to-video generation - we start from complete noise
-        latents = torch.randn(
+        # Initialize latents with ZEROS (generating from scratch, no video input)
+        # This is a text-to-video generation - we start from zero initialization
+        latents = torch.zeros(
             (1, 4, LATENT_HEIGHT, LATENT_WIDTH),
             device=self.device,
             dtype=torch.float16
@@ -175,7 +175,7 @@ class VideoGenerator:
     def generate(self, prompt, num_inference_steps=NUM_INFERENCE_STEPS, guidance_scale=GUIDANCE_SCALE):
         """
         Generate video (multiple frames) from text prompt ONLY (no video input)
-        Builds video from complete scratch using pure random noise initialization.
+        Builds video from complete scratch using zero initialization.
         Each frame is generated independently from the text prompt.
         
         Args:

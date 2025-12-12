@@ -1,6 +1,6 @@
 # Text-to-Video Diffusion Model
 
-A transformer-based text-to-video diffusion model trained on the MSR-VTT dataset. This project implements a video generation system that can create videos from text prompts using a diffusion process with cross-attention for text conditioning.
+A transformer-based text-to-video diffusion model trained on the MSR-VTT dataset. This project implements a **pure text-to-video generation system** that creates videos **entirely from scratch** using only text prompts - no video input required. The model uses zero initialization and cross-attention for text conditioning.
 
 ## Project Overview
 
@@ -187,11 +187,13 @@ python app.py
 Then open `http://localhost:7860` in your browser.
 
 **How it works:**
-1. Starts with random noise (pure generation from scratch)
+1. Starts with zero-initialized latents (pure generation from scratch)
 2. Uses DDIM scheduler to denoise step-by-step
 3. Conditions each step on your text prompt
 4. Decodes final latents to video frames
 5. Outputs a video generated entirely from the prompt
+
+**Note**: The model uses zero initialization instead of random noise, providing more stable and controlled generation.
 
 **Note**: You need a trained checkpoint (from step 2) to run inference. The model generates videos from scratch - no video input required.
 
@@ -208,10 +210,10 @@ Top 3 performing prompts (by CLIP score):
 
 The model uses a transformer architecture with:
 
-1. **Input Processing:**
-   - Latent input: [Batch, 4, 32, 32] (VAE latent space)
-   - Flattened to sequence: [Batch, 1024, 4]
-   - Projected to hidden dimension: [Batch, 1024, 768]
+1. **Generation Process:**
+   - **Initialization**: Zero-initialized latents [Batch, 4, 32, 32] (not random noise)
+   - **Input Processing**: Latents flattened to sequence: [Batch, 1024, 4]
+   - **Projection**: Projected to hidden dimension: [Batch, 1024, 768]
 
 2. **Embeddings:**
    - Positional embeddings: Learned, size [1, 1024, 768]
@@ -272,6 +274,7 @@ Best performing checkpoint: **Epoch 100**
 2. **Single Frame Training**: Model trained on individual frames, not temporal sequences
 3. **Abstract Outputs**: Early training produces abstract/blurry results
 4. **Text Conditioning**: Works for simple prompts (colors, objects), less effective for complex scenes
+5. **Zero Initialization**: Starting from zeros may require more denoising steps compared to random noise initialization
 
 ### Future Improvements
 
