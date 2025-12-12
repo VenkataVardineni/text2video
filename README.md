@@ -141,8 +141,7 @@ This will:
 - Generate CLIP text embeddings
 - Save to `data/msr-vtt/latents/` and `data/msr-vtt/text_embeddings/`
 
-
-### 3. Training
+### 2. Training
 
 **⚠️ Training is required before inference!**
 
@@ -166,7 +165,14 @@ Or resume from a checkpoint:
 RESUME_FROM = "checkpoints/checkpoint_epoch_X.pt"
 ```
 
-### 4. Inference
+Training configuration (in `train.py`):
+- `NUM_EPOCHS = 100`
+- `BATCH_SIZE = 2`
+- `GRADIENT_ACCUMULATION_STEPS = 4`
+- `LEARNING_RATE = 1e-4`
+- `SAVE_EVERY = 5` (save every 5 epochs)
+
+### 3. Inference
 
 **After training**, generate videos from text prompts:
 
