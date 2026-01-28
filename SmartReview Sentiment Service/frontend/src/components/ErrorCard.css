@@ -1,0 +1,36 @@
+.error-card {
+  background: linear-gradient(135deg, #fee 0%, #fcc 100%);
+  border: 2px solid #f99;
+}
+
+.error-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.error-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.error-text {
+  flex: 1;
+}
+
+.error-text h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #c33;
+  margin-bottom: 4px;
+}
+
+.error-text p {
+  color: #a33;
+  font-weight: 500;
+}
+
+.error-card .close-btn {
+  flex-shrink: 0;
+}
+
